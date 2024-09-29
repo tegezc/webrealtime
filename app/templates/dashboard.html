@@ -3,33 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Dashboard</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+    <title>Dashboard</title>
 </head>
 <body>
-    <h2>Product Dashboard</h2>
+    <h1>Product Dashboard</h1>
     <table>
         <thead>
             <tr>
-                <th>Name</th>
-                <th>NIP</th>
+                <th>Product Name</th>
                 <th>Stock</th>
             </tr>
         </thead>
         <tbody id="product-table">
+            {% for product in products %}
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.stock }}</td>
+            </tr>
+            {% endfor %}
         </tbody>
     </table>
 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.min.js"></script>
     <script>
-        var socket = io();
-        socket.on('updateProduct', function(products) {
-            var table = document.getElementById('product-table');
-            table.innerHTML = '';  // Clear existing table rows
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
 
-            products.forEach(function(product) {
-                var row = '<tr><td>' + product.name + '</td><td>' + product.nip + '</td><td>' + product.stock + '</td></tr>';
-                table.innerHTML += row;
-            });
+        // Ketika terkoneksi ke WebSocket
+        socket.on('connect_response', function(data) {
+            console.log(data.message);
+        });
+
+        // Ketika ada produk baru, update tabel secara real-time
+        socket.on('new_product', function(data) {
+            var table = document.getElementById('product-table');
+            var row = table.insertRow();
+            var nameCell = row.insertCell(0);
+            var stockCell = row.insertCell(1);
+            nameCell.innerHTML = data.name;
+            stockCell.innerHTML = data.stock;
         });
     </script>
 </body>

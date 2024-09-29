@@ -60,13 +60,13 @@ def add_product():
         db.session.commit()
 
         # Emit produk terbaru ke semua client melalui WebSocket
-        emit('new_product', {
+        socketio.emit('new_product', {
             'name': new_product.name,
             'stock': new_product.stock
-        }, broadcast=True)
+        },namespace='/')
 
         flash('Product successfully added!', 'success')
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('main.dashboard'))
 
     return render_template('add_product.html', form=form)
 
