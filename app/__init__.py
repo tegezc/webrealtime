@@ -5,6 +5,8 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_socketio import SocketIO
 from flask_migrate import Migrate
+import logging
+from config import Config
 
 
 # Inisialisasi extension Flask
@@ -14,14 +16,11 @@ login_manager = LoginManager()
 socketio = SocketIO()
 migrate = Migrate()
 
-# Memuat variable dari file .env
-load_dotenv()
-
-def create_app():
+def create_app(config_class:Config):
     app = Flask(__name__)
 
-    # Memuat konfigurasi dari config.py atau file lain
-    app.config.from_object('config.Config')
+    # Memuat konfigurasi dari config class
+    app.config.from_object(config_class)
     
     # Inisialisasi database dan extension lainnya
     db.init_app(app)
@@ -32,6 +31,10 @@ def create_app():
     
     # Tentukan halaman login Flask-Login
     login_manager.login_view = 'main.login'
+
+    # Error handling
+    if not app.debug:
+        logging.basicConfig(level=logging.INFO)
 
      # Fungsi user_loader untuk memuat user dari database berdasarkan ID
     @login_manager.user_loader

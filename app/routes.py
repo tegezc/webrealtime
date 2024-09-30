@@ -24,7 +24,7 @@ def login():
             return redirect(url_for('main.dashboard'))
         else:
             flash('Invalid login. Please check your credentials.')
-        return redirect(url_for('main.dashboard'))
+        return redirect(url_for('main.login'))
     return render_template('login.html', form=form)
 
 @main.route('/logout')
@@ -45,6 +45,7 @@ def create_user():
         user = User(name=name, email=email, dob=dob, hobby=hobby, password=password)
         db.session.add(user)
         db.session.commit()
+        flash('User created successfully!')
         return redirect(url_for('main.login'))
     return render_template('create_user.html', form=form)
 
