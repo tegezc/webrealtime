@@ -13,7 +13,10 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: '3.9'
+        
+    - name: Check dnspython version
+      run: pip show dnspython
     - name: Install dependencies
       run: pip install -r requirements.txt
     - name: Run tests
-      run: pytest
+      run: pytest --maxfail=1 --disable-warnings -v
