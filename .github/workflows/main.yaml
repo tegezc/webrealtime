@@ -11,12 +11,12 @@ jobs:
     - uses: actions/checkout@v3
     - name: Set up Python
       uses: actions/setup-python@v4
-      with:
+      with: 
         python-version: '3.9'
-        
-    - name: Check dnspython version
-      run: pip show dnspython
+    
     - name: Install dependencies
       run: pip install -r requirements.txt
+    - name: Check dnspython version
+      run: pip show dnspython
     - name: Run tests
       run: pytest --maxfail=1 --disable-warnings -v
