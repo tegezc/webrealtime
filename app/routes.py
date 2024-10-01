@@ -19,7 +19,7 @@ def login():
     if form.validate_on_submit():
         password = form.password.data
         user = User.query.filter_by(email=form.email.data).first()
-        if user and user.password == password:  # Gantilah dengan validasi hash password
+        if user and user.check_password(password):
             login_user(user)
             return redirect(url_for('main.dashboard'))
         else:
@@ -42,7 +42,8 @@ def create_user():
         dob = form.dob.data
         hobby = form.hobby.data
         password = form.password.data
-        user = User(name=name, email=email, dob=dob, hobby=hobby, password=password)
+        user = User(name=name, email=email, dob=dob, hobby=hobby)
+        user.set_password(password)
         db.session.add(user)
         db.session.commit()
         flash('User created successfully!')
